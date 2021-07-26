@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daka.user.Dao.CheckWorkMapper">
+    <select id="selectAllCheckerbydate" parameterType="java.time.LocalDate" resultType="com.daka.user.entity.Checker">
+        select * from checkers where check_date = #{date}
+    </select>
+
+    <select id="isCheckIn" resultType="Integer">
+        select if(count(*)>0,1,-1) from checkers where check_date = #{date} and usr_ID = #{usr_ID}
+    </select>
+
+    <insert id="add">
+        insert into ${tableName} (usr_ID,check_in_time,check_out_time,
+        check_date,isBeLate,isLeaveEarly,isFlexible,isNormal,isOut,workHours,workOverHours,expression) values
+        <foreach collection="cks" item="ck" separator=",">
+            (#{ck.usr_ID},#{ck.check_in_time},#{ck.check_out_time},#{ck.check_date},#{ck.isBeLate},#{ck.isLeaveEarly},#{ck.isFlexible},
+            #{ck.isNormal},#{ck.isOut},#{ck.workHours},#{ck.workOverHours},#{ck.expression})
+        </foreach>
+    </insert>
+
+    <select id="selectFlexibleTimesEveryMonth" resultType="Integer">
+        select sum(isFlexible) from ${tableName} where usr_ID = usr_ID
+    </select>
+
+    <select id="selectAllCheckerbyStatus" resultType="com.daka.user.entity.Checker">
+        <choose>
+            <when test="Status==1">
+                select a.*,b.usr_job from checkers a,user b where check_type = -1
+            </when>
+
+            <when test="Status==2">
+                select a.*,b.usr_job from checkers a,user b where check_type = -2
+            </when>
+        </choose>
+        and a.usr_ID = b.usr_ID and DATE_FORMAT(check_date, '%Y-%m') = #{month}
+        order by check_date desc,check_time desc
+        limit #{start},#{end}
+    </select>
+
+    <select id="selectAllCheckerbyStatusAllcount" resultType="Integer">
+        <choose>
+            <when test="Status==1">
+                select count(*) from checkers where check_type = -1
+            </when>
+
+            <when test="Status==2">
+                select count(*) from checkers where check_type = -2
+            </when>
+        </choose>
+        and DATE_FORMAT(check_date, '%Y-%m') = #{month}
+    </select>
+
+</mapper>

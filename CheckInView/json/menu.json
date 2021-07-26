@@ -1,0 +1,66 @@
+{
+	"status": 0,
+	"msg": "ok",
+	"data": [{
+			"id": 1,
+			"name": "员工管理",
+			"icon": "&#xe6b8;",
+			"url": "",
+			"children": [{
+				"id": 2,
+				"name": "员工注册",
+				"icon": "",
+				"url": "./pages/register/register.html"
+			}, {
+				"id": 3,
+				"name": "员工列表",
+				"icon": "",
+				"url": "./pages/member/list.html"
+			}]
+		},
+		{
+			"id": 8,
+			"name": "考勤管理",
+			"icon": "&#xe705;",
+			"url": "",
+			"children": [{
+				"id": 9,
+				"name": "打卡记录",
+				"icon": "",
+				"url": "./pages/checkin/view.html"
+			}, {
+				"id": 10,
+				"name": "加班榜",
+				"icon": "",
+				"url": "./pages/checkin/order.html"
+			}, {
+				"id": 12,
+				"name": "考勤统计",
+				"icon": "",
+				"url": "./pages/checkin/statistic.html"
+			}, {
+				"id": 12,
+				"name": "考勤异常",
+				"icon": "",
+				"url": "./pages/checkin/punish.html"
+			}, {
+				"id": 11,
+				"name": "着装异常",
+				"icon": "",
+				"url": "./pages/checkin/error.html"
+			}]
+		},
+		{
+				"id": 13,
+				"name": "员工关怀",
+				"icon": "&#xe6ce;",
+				"url": "",
+				"children": [{
+					"id": 14,
+					"name": "情绪统计",
+					"icon": "",
+					"url": "./pages/mood/moodsta.html"
+				}]
+		}
+	]
+}

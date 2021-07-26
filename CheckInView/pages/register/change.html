@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title> 员工人脸信息录入 </title>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" href="css/web_bg.css">
+	</head>
+	<body>
+		<div id="web_bg" style="background-image: url(images/bg1.jpg);"></div>
+		<div class="container" id="ball" style="position: relative;margin-top: 4%;" >
+			<div class="content">
+				<form action="register.php" class="layui-form" method="post">
+					<div class="layui-form-item">
+						<h1 style="width: 30%;float: left;height: 10px;margin-top: 0px;">信息修改</h1>
+						<img src="images/美亚.png" / style="text-align: center;width: 70%;height: 5%;">
+					</div><hr>
+					
+					<div id="yuan1" style="text-align: center;margin: 0 auto;">
+						<!-- <embed id="video" width="320" height="240"> -->
+						<img id="demo1" src="images/头像扫描.png" / style="text-align: center;margin: 0 auto;width:200px ;height:200px">
+					</div>
+					
+					<!-- <div style="width: 250px;margin: 0 auto;margin-bottom: 10px;margin-top: 10px;">
+					    <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">
+					      <div class="layui-progress-bar" lay-percent=""></div>
+					    </div>
+					  </div> -->
+						
+					<div class="layui-form-item" style="margin-top: 5px;">
+						<label class="layui-form-label">姓&nbsp;&nbsp;&nbsp;&nbsp;名</label>
+						<div class="layui-input-block">
+							<input id="name" type="text" name="usr_name" class="layui-input" required  lay-verify="required"  placeholder="请输入您的姓名" autocomplete="off" >
+						</div>
+					</div>
+					
+					<!-- <div class="layui-form-item">
+						<label class="layui-form-label">工&nbsp;&nbsp;&nbsp;&nbsp;号</label>
+						<div class="layui-input-block">
+							<input id="number" type="text" name="usr_ID" class="layui-input" required  lay-verify="required"  placeholder="请输入您的工号" autocomplete="off" >
+						</div>
+					</div> -->
+					
+					<div class="layui-form-item">
+						<label class="layui-form-label">职&nbsp;&nbsp;&nbsp;&nbsp;位</label>
+						<div class="layui-input-block">
+							<input id="zhiwu" type="text" name="usr_ID" class="layui-input" required  lay-verify="required"  placeholder="请输入您的职位" autocomplete="off" >
+						</div>
+					</div>
+					
+					<!-- <div class="layui-form-item">
+						<label class="layui-form-label">照&nbsp;&nbsp;&nbsp;&nbsp;片</label>
+						<div style="width: 95px;">
+						    <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">
+						      <div class="layui-progress-bar" lay-percent=""></div>
+						    </div>
+						</div>
+					</div> -->
+					
+					<div class="layui-form-item">
+						<div class="layui-input-block" > <!-- style="position: relative; width: 70%; float: left;"-->
+							<button id="test1" type="button" class="layui-btn layui-btn-normal" onmouseover='chageRadis(this)' onmouseleave="resetclass(this)">上传照片
+								<i class="layui-icon">&#xe67c;</i>
+							</button>
+							<button id="submit" lay-submit class="layui-btn" onmouseover="chageRadis(this)" onmouseleave="resetclass(this)" onclick="submitinfo()" style="margin-left: 10px;">提交</button>
+							<button id="reset" type="reset" class="layui-btn layui-btn-primary" onmouseover="chageRadis(this)" onmouseleave="resetclass(this)" onclick="delpic()">重置</button>
+						</div>
+						<!-- <p id="demoText" style="position: relative; width: 30%; float: right;"></p> -->
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- <footer style="text-align: center;margin-top: 90px;">
+			<p>Powered by: MEIYA PICO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact information: <a href="lmfff@stu.xmu.edu.sn">someone@meiyapico.com</a>.</p>
+		</footer> -->
+		
+		<script type="text/javascript" src="layui/layui.js"></script>
+		<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/jquery-3.4.1.js"></script>
+		<script>
+			layui.use('form', function(){
+				var form = layui.form;
+			});
+			
+			//访问用户媒体设备的兼容方法
+			function getUserMedia(constraints, success, error) {
+			if (navigator.mediaDevices.getUserMedia) {
+			//最新的标准API
+			navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+			} else if (navigator.webkitGetUserMedia) {
+			//webkit核心浏览器
+			navigator.webkitGetUserMedia(constraints,success, error)
+			} else if (navigator.mozGetUserMedia) {
+			//firfox浏览器
+			navigator.mozGetUserMedia(constraints, success, error);
+			} else if (navigator.getUserMedia) {
+			//旧版API
+			navigator.getUserMedia(constraints, success, error);
+			}
+			}
+			
+			let video = document.getElementById('video');
+			let canvas = document.getElementById('canvas');
+			let context = canvas.getContext('2d');
+			
+			function success(stream) {
+			//兼容webkit核心浏览器
+			let CompatibleURL = window.URL || window.webkitURL;
+			//将视频流设置为video元素的源
+			console.log(stream);
+			
+			//video.src = CompatibleURL.createObjectURL(stream);
+			video.srcObject = stream;
+			video.play();
+			}
+			
+			function error(error) {
+			console.log(`访问用户媒体设备失败${error.name}, ${error.message}`);
+			}
+			
+			if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+			//调用用户媒体设备, 访问摄像头
+			getUserMedia({video : {width: 480, height: 320}}, success, error);
+			} else {
+			alert('不支持访问用户媒体');
+			}
+			
+			document.getElementById('capture').addEventListener('click', function () {
+			context.drawImage(video, 0, 0, 480, 320);
+			})
+			
+			function chageRadis(obj){
+			let class1 = obj.className;
+			let new_class = class1 + " layui-btn-radius"
+			obj.className = new_class;
+			}
+			
+			function resetclass(obj){
+			let class1 = obj.className.split(" ");
+			class1.pop()
+			let new_class = class1.join(" ")
+			obj.className = new_class;
+			}
+			
+			function showpic(){
+				let urlpic = document.getElementById("pictext").value;
+				console.log(urlpic);
+				if(urlpic!=""){
+					$("#touxiang").attr('src',urlpic); 
+				}
+			}
+			
+			function submitinfo(){
+				
+			}
+			layui.use('form', function(){
+			        var form = layui.form;
+			});
+			
+			function delpic(){
+			$("#demo1").attr('src',"images/头像扫描.png")
+			}
+		</script>
+		<script>
+		let urls4 = "http://192.168.43.75:8080/";
+		layui.use(['upload', 'element', 'layer'], function(){
+		  var $ = layui.jquery
+		  ,upload = layui.upload
+		  ,element = layui.element
+		  ,layer = layui.layer;
+		  
+		  //常规使用 - 普通图片上传
+		  var uploadInst = upload.render({
+		    elem: '#test1'
+		    ,url: urls4 + 'user/add' //改成您自己的上传接口
+			/* ,headers{"Access-Control-Allow-Origin"} */
+			,data: {
+					usr_name:function(){
+						return $('#name').val();
+					},
+					usr_ID:function(){
+						return $('#number').val();
+					},
+					usr_job:function(){
+						return $('#zhiwu').val();
+					}
+				}
+		    ,before: function(obj){
+		      //预读本地文件示例，不支持ie8
+		      obj.preview(function(index, file, result){
+		        $('#demo1').attr('src', result); //图片链接（base64）
+		      });
+			  
+		      if($('#name').val() =="" || $('#name').val() == "" || $('#zhiwu').val() == ""){
+				console.log("test1");
+		      	return layer.msg('信息未填写');
+		      };
+			  
+		      element.progress('demo', '0%'); //进度条复位
+		      layer.msg('上传中', {icon: 16, time: 0});
+		    }
+		    ,done: function(res){
+		      //如果上传失败
+		      if(res.code > 0){
+		        return layer.msg('上传失败');
+		      }
+		      //上传成功的一些操作
+		      //……
+		      $('#demoText').html(''); //置空上传失败的状态
+		    }
+		    ,error: function(){
+		      //演示失败状态，并实现重传
+		      var demoText = $('#demoText');
+		      /* demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+		      demoText.find('.demo-reload').on('click', function(){
+		        uploadInst.upload();
+		      }); */
+		    }
+		    //进度条
+		    ,progress: function(n, elem, e){
+		      element.progress('demo', n + '%'); //可配合 layui 进度条元素使用
+		      if(n == 100){
+		        layer.msg('上传完毕', {icon: 1});
+		      }
+		    }
+		  });
+		});
+		</script>
+	</body>
+</html>
+
+<style type="text/css">
+	#yuan{
+	        box-sizing: border-box;
+	        width:240px;
+	        height:240px;
+	        border:2px solid lightgray;
+	        -webkit-border-radius:120px;
+	        -moz-border-radius:120px;
+	        border-radius:120px;
+			text-align: center;
+			margin: 0 auto;
+			margin-top: 1px;
+			margin-bottom: 10px;
+	    }
+	/* h4 {
+			display: flex;
+			flex-direction: row;
+		}
+				
+	h4:before,
+	h4:after {
+		content: "";
+		flex: 1 1;
+		border-bottom: 1px solid #C9C5C5;
+		margin : auto;
+	} */
+	
+</style>

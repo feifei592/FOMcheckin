@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<meta name='apple-mobile-web-app-capable' content='yes'>
+		<meta name='apple-mobile-web-app-status-bar-style' content='black'>
+		<meta name='format-detection' content='telephone=no'>
+		<title>打卡状态展示</title>
+		<meta name="renderer" content="webkit" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<link rel="stylesheet" href="./static/css/font.css" />
+		<link rel="stylesheet" href="./lib/layui/css/layui.css" />
+		<link rel="stylesheet" href="./lib/layui/css/layui.mobile.css" />
+		<!-- <link rel="stylesheet" href="./lib/layui/lay/layui.js" /> -->
+		<link rel="stylesheet" href="./static/css/weadmin.css" />
+	</head>
+	<style>
+		html{font-size:62.5%;}
+		
+		body {
+			height: 100%;
+			width: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+			font:normal 100% Arial,sans-serif;
+			font-size:14px; 
+			font-size:1.4rem;
+		}
+		
+		 video::-webkit-media-controls{
+		        display:none !important;
+		    }
+
+		/* 文字两边加横线 */
+		.header {
+			width: 100%;
+			height: 36px;
+			line-height: 36px;
+			text-align: center;
+			position: relative;
+		}
+
+		.header div:before,
+		.header div:after {
+			position: absolute;
+			background: #ccc;
+			content: "";
+			height: 1px;
+			top: 50%;
+			width: 30%;
+		}
+
+		.header div:before {
+			left: 5px;
+		}
+
+		.header div:after {
+			right: 5px;
+		}
+
+		#vd {
+			position: relative;
+		}
+
+		#vd video {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			min-width: 100%;
+			min-height: 100%;
+			background-size: cover;
+			overflow: hidden;
+		}
+
+		#message{
+			opacity: 1;
+			height: 100%;
+			position: absolute;
+			right: 0px;
+			z-index: 9999;  
+			visibility: visible;
+			border: 1px solid #e3e3e3;
+		}
+		
+		#back{
+			opacity: 0.9;
+			height: 100%;
+			position: absolute;
+			right: 0px;
+			z-index: 100;  
+			visibility: visible;
+			border: 1px solid #e3e3e3;
+			background: url(./static/images/美亚.png);
+			-moz-opacity:0.9;  
+			-khtml-opacity: 0.9;
+			background-size:100% auto;
+			background-repeat: repeat;
+			background-position-y: center;
+			
+		}
+		/* video控件平铺页面的css */
+		video {
+			object-fit: fill;
+		}
+	</style>
+	<body>
+		<div class="layui-row" style="margin: 0 auto; width: 100%; height: 100%;">
+			<div class="layui-col-md12" style="margin: 0 auto; height: 100%; background-color: #ffffff">
+				<div class="layui-row grid-demo" style="margin: 0 auto; height: 100%;">
+					<div class="layui-col-md12" style="height: 100%;position: relative;" id="vd">
+						<!-- <video width="100%" height="100%" controls="controls" autoplay loop>
+							<source src="http://localhost:8080/videotest" type="video/ogg" />
+							<source src="https://300188.cn/uploadfiles/video/7c670bd21901ead4c47b73ae699ffe63.mp4" type="video/mp4" />
+								不支持
+						</video> -->
+						<iframe src="http://192.168.43.74/doc/page/preview.asp" width="75%" height="100%" style="z-index: -2;"></iframe>
+					</div>
+					<div id="message" class="layui-col-md3">
+						<div id="mess" class="grid-demo grid-demo-bg2" style="height: 100%;background-color: rgba(255, 255, 255, 1.0);">
+							<img src="./static/images/美亚.png"
+								style="text-align: center;width: 100%;margin-top: 0.5rem;margin-bottom: 0.5rem;" />
+							<div class="header">
+								<div ><h1>打卡状态</h1></div>
+							</div>
+							<div style="text-align: center;margin-bottom: 15px;">
+								<img id="pic" src="./static/images/头像扫描.png" style="text-align: center;width: 90%;height: 320px;" />
+								<div style="margin-bottom: 10px;">
+									<span style="font-size: 3rem;color: #f80000;" id="state">
+										<i class="layui-icon layui-icon-face-surprised" style="font-size: 3rem;color: #f80000;"></i>
+										已迟到3分钟&nbsp;
+									</span>
+								</div>
+								<div style="display: flex;align-items:center;justify-content:center;display: -webkit-flex;flex-direction:column;">
+									<div>
+										<span id="name" style="font-size: 2rem;">姓名</span>
+									</div>
+									<div>
+										<span id="ID" style="font-size: 2rem;">工号</span>
+									</div>
+									<div>
+										<span id="time" style="font-size: 2rem;">打卡时间</span>
+									</div>
+								</div>
+							</div>
+							<div class="header">
+								<div><h1>形象检测</h1></div>
+							</div>
+							<div style="display: flex;align-items:center;justify-content:center;display: -webkit-flex;flex-direction:column;">
+								<div style="margin-top: 5px;">
+									<span style="font-size: 2rem;">发&nbsp;色&nbsp;&nbsp;</span>
+									<span style="font-size: 2rem;" id="hair">
+										<i class="layui-icon layui-icon-ok" style="font-size: 2.5rem; color: #00c500;"></i>
+									</span>
+									<br>
+								</div>
+								<div style="margin-top: 5px;">
+									<span style="font-size: 2rem;">衣&nbsp;领&nbsp;&nbsp;</span>
+									<span style="font-size: 2rem;" id="collar">
+										<i class="layui-icon layui-icon-404" style="font-size: 2.5rem; color: #ff0000;"></i>
+									</span>
+									<br>
+								</div>
+								<div >
+									<span style="font-size: 2rem;">长&nbsp;裤&nbsp;&nbsp;</span>
+									<span style="font-size: 2rem;" id="mark">
+										<i class="layui-icon layui-icon-ok" style="font-size: 2.5rem; color: #00c500;"></i>
+									</span>
+								</div>
+								<div >
+									<span style="font-size: 2rem;">表&nbsp;情&nbsp;&nbsp;</span>
+									<span style="font-size: 2rem;" id="face">
+										<!-- <i class="layui-icon layui-icon-ok" style="font-size: 30px; color: #00c500;"></i> -->
+										<img src='./static/images/h.png' />
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="back" class="layui-col-md3">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- <script src="./lib/layui/layui.js" charset="utf-8"></script> -->
+		<script src="./static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+		<!-- <script src="./static/js/jquery-3.4.1.js" charset="utf-8"></script> -->
+		<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+		<script>
+			/* $(document).ready(function() {
+				
+				console.log("0000");
+			}); */
+			$(function() {
+				//定义code
+				/* var code; */
+				//获取code  TODO：
+				console.log("1111");
+				getStatusLong();
+			});
+			//  长轮询执行
+			function getStatusLong() {
+				/* alert("000"); */
+				console.log("2222");
+				var urls0 = "http://192.168.43.75:8080/";
+				/* var data = {
+					operate: '操作TODO:',
+					code: code,
+				}; */
+				$.ajax({
+					type: 'get',
+					url: urls0 + "checker/getChecker",
+					dataType: 'json',
+					cache: false ,
+					timeout: 10 * 1000, // 超时时间10s
+					/* data: data, */
+					success:function(data, textStatus){
+								console.log("56655");
+								if(data){
+					                //请求成功，刷新数据
+									/* document.getElementById("message").style.visibility="visible"; */
+									console.log(data);
+									var stat = data.check_type;
+									var overtime = data.overtime;
+									var name = data.usr_name;
+									var ID = data.usr_ID;
+									var time = data.check_date + " " + data.check_time;
+									var hari = data.hair_color;
+									var pt = data.low_cloth;
+									var fac = data.expression;
+									var pics = data.check_pic;
+									var collar = data.collar_round_neck;
+									var pics = pics.split("\\\\")[4];
+									pics = urls0 + "checkpic/" + pics;
+									console.log(pics);
+									//头像
+									var pica = document.getElementById("pic");
+									pica.setAttribute("src",pics);
+									//状态栏
+									if (stat == 1) {
+										//正常上班
+										document.getElementById("state").innerHTML =
+											"<i class='layui-icon layui-icon-face-smile' style='font-size: 3rem; color: #19c805;'></i> 欢迎上班&nbsp;";
+									} else if (stat == -1) {
+										//迟到
+										document.getElementById("state").innerHTML =
+											"<i class='layui-icon layui-icon-face-surprised' style='font-size: 3rem; color: #f80000;'></i> 已迟到" +
+											overtime + "分钟&nbsp;";
+									} else if (stat == 2) {
+										//正常下班
+										document.getElementById("state").innerHTML =
+											"<i class='layui-icon layui-icon-face-smile' style='font-size: 3rem; color: #19c805;'></i> 一路平安&nbsp;";
+									} else if (stat == -2) {
+										//早退
+										document.getElementById("state").innerHTML =
+											"<i class='layui-icon layui-icon-face-surprised' style='font-size: 3rem; color: #f80000;'></i> 已早退" +
+											overtime + "分钟&nbsp;";
+									}
+									//姓名
+									document.getElementById("name").innerHTML = name;
+									//id
+									document.getElementById("ID").innerHTML = ID;
+									//time
+									document.getElementById("time").innerHTML = time;
+									//发色
+									if (hari === "gary" | hari === "black") {
+										document.getElementById("hair").innerHTML = "<i class='layui-icon layui-icon-close' style='font-size: 3rem; color: #f80000;'></i>";
+									}
+									/* else if(Object.is(fac,NaN)){
+										document.getElementById("hair").innerHTML = "<i class='layui-icon layui-icon-404' style='font-size: 3rem; color: #f80000;'></i>";
+									} */
+									else{
+										document.getElementById("hair").innerHTML = "<i class='layui-icon layui-icon-ok' style='font-size: 3rem; color: #00c500;'></i>";
+									}
+									//着装
+									if (pt === "Shorts") {
+										document.getElementById("mark").innerHTML = "<i class='layui-icon layui-icon-close' style='font-size: 3rem; color: #f80000;'></i>";
+									}
+									else if(Object.is(fac,NaN)){
+										document.getElementById("mark").innerHTML = "<i class='layui-icon layui-icon-404' style='font-size: 3rem; color: #f80000;'></i>";
+									}
+									else{
+										document.getElementById("mark").innerHTML = "<i class='layui-icon layui-icon-ok' style='font-size: 3rem; color: #00c500;'></i>";
+									}
+									//表情
+									if (fac === "neutral"){
+										document.getElementById("face").innerHTML = "<img src='./static/images/n.png' />";
+									}
+									else if (fac === "happiness"){
+										document.getElementById("face").innerHTML = "<img src='./static/images/h.png' />";
+									}
+									else if (fac === "surprise"){
+										document.getElementById("face").innerHTML = "<img src='./static/images/su.png' />";
+									}
+									else if (fac === "sadness"){
+										document.getElementById("face").innerHTML = "<img src='./static/images/sa.png' />";
+									}
+									else if (fac === "anger"){
+										document.getElementById("face").innerHTML = "<img src='./static/images/a.png' />";
+									}
+									else if (fac === "disgust"){
+										document.getElementById("face").innerHTML = "<img src='./static/images/d.png' />";
+									}
+									else if(Object.is(fac,NaN)){
+										document.getElementById("face").innerHTML = "<i class='layui-icon layui-icon-404' style='font-size: 3rem; color: #f80000;'></i>";
+									}
+									else{
+										document.getElementById("face").innerHTML = "<img src='./static/images/f.png' />";
+									}
+									//衣领
+									if (collar === 1) {
+										document.getElementById("collar").innerHTML = "<i class='layui-icon layui-icon-ok' style='font-size: 3rem; color: #00c500;'></i>";
+									}
+									else if(Object.is(collar,NaN)){
+										document.getElementById("collar").innerHTML = "<i class='layui-icon layui-icon-404' style='font-size: 3rem; color: #f80000;'></i>";
+									}
+									else{
+										document.getElementById("collar").innerHTML = "<i class='layui-icon layui-icon-close' style='font-size: 3rem; color: #f80000;'></i>";	
+									}
+									/* setTimeout("document.getElementById('message').style.visibility='hidden'",10*1000); */
+								} 
+								if(textStatus === "success"){
+					                //成功之后，再发送请求，递归调用
+									getStatusLong();
+								}
+							},
+					// 超时意味着出错了
+					error: function(error) {
+						console.log(error);// timeout
+						// 立即发出请求
+						getStatusLong();
+					}
+
+				});
+			}
+		</script>
+	</body>
+</html>

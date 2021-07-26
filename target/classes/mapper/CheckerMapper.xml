@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daka.user.Dao.CheckerMapper">
+    <insert id="addChecker" parameterType="com.daka.user.entity.Checker">
+        insert into checkers (usr_name,usr_ID,check_time,check_date,check_type,device_num,
+        check_pic,collar_round_neck,hair_color,low_cloth,expression)
+        values (#{usr_name},#{usr_ID},#{check_time},#{check_date},#{check_type},#{device_num}
+        ,#{check_pic},#{collar_round_neck},#{hair_color},#{low_cloth},#{expression})
+    </insert>
+    <select id="selectuserbyID" resultType="com.daka.user.entity.User">
+        select * from user where usr_ID = #{usr_ID}
+    </select>
+
+    <select id="selectChecker" resultType="com.daka.user.entity.Checker">
+        select * from checkers where 1=1
+        <if test="str != null and str != ''">
+            and
+            usr_name LIKE "%"#{str}"%"
+            or usr_ID like "%"#{str}"%"
+        </if>
+        <if test="startDate != null">
+            and
+            check_date between #{startDate} and #{endDate}
+        </if>
+        order by check_date desc,check_time desc limit #{start},#{end}
+    </select>
+    <select id="selectAllCount" resultType="Integer">
+        select count(*) from checkers where 1=1
+        <if test="str != null and str != ''">
+            and
+            usr_name LIKE "%"#{str}"%"
+            or usr_ID like "%"#{str}"%"
+        </if>
+        <if test="startDate != null">
+            and
+            check_date between #{startDate} and #{endDate}
+        </if>
+    </select>
+
+    <select id="selectStatebyExpression" resultType="String">
+        select statement from expression where expression = #{expression} ORDER BY RAND() LIMIT 1
+    </select>
+</mapper>

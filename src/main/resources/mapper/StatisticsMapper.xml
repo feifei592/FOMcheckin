@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daka.user.Dao.StatisticsMapper">
+    <select id="selectWorkHours" resultType="com.daka.user.entity.WorkRank">
+        select a.usr_ID,sum(a.workHours) as workHours,sum(a.workOverHours) as workOverHours,b.usr_name,b.usr_pic
+        from ${tableName} a,user b
+        where a.usr_ID = b.usr_ID
+        group by usr_ID
+        order by workOverHours DESC
+    </select>
+    <select id="selectAllCheckMonth"  resultType="com.daka.user.entity.CheckMonth">
+        select sum(isNormal) as normalTimes,
+        sum(isBeLate) as lateTimes,
+        sum(isLeaveEarly) as earlyTimes,
+        sum(isFlexible) as flexibleTimes,
+        sum(isOut) as outTimes,
+        a.usr_ID,b.usr_name,b.usr_job,b.usr_pic
+        from ${tableName} a,user b
+        where a.usr_ID = b.usr_ID
+        group by a.usr_ID
+        order by a.usr_ID
+        limit #{start},#{end}
+    </select>
+    <select id="selectAllCount" resultType="Integer">
+        select count(distinct(usr_ID)) from ${_parameter}
+    </select>
+    <select id="selectTotalAbnormal" resultType="com.daka.user.entity.AbNormal">
+        select
+        a.id,a.check_date as date,a.check_time as time,b.usr_ID,b.usr_name,b.usr_job,b.usr_pic,
+        substring_index(a.check_pic,'\\',-1) as pic_name,
+        <choose>
+            <when test="abtype=='hair_color'">
+                '发色违规' as abtype
+            </when>
+            <when test="abtype=='low_cloth'">
+                '下装违规' as abtype
+            </when>
+            <when test="abtype=='collar'">
+                '上衣违规' as abtype
+            </when>
+        </choose>
+        from checkers a,user b
+        where a.usr_ID = b.usr_ID and
+        <choose>
+            <when test="abtype=='hair_color'">
+                a.hair_color is not null and a.hair_color != 'gray' and a.hair_color != 'black'
+            </when>
+            <when test="abtype=='low_cloth'">
+                a.low_cloth = 'Shorts'
+            </when>
+            <when test="abtype=='collar'">
+                a.collar_round_neck = 0
+            </when>
+        </choose>
+        and DATE_FORMAT(check_date, '%Y-%m') = #{month}
+    </select>
+
+    <select id="selectAbnormalPersons" resultType="Integer">
+        select count(*) from checkers where hair_color is not null and hair_color != 'gray' and hair_color != 'black'
+        and DATE_FORMAT(check_date, '%Y-%m') = #{month}
+        union
+        select count(*) from checkers where low_cloth = 'Shorts'
+        and DATE_FORMAT(check_date, '%Y-%m') = #{month}
+        union
+        select count(*) from checkers where collar_round_neck = 0
+        and DATE_FORMAT(check_date, '%Y-%m') = #{month}
+    </select>
+
+</mapper>

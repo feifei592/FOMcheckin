@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>您好!<br>您的打卡信息如下：</p>
+<table border="1">
+    <tr>
+        <td>姓名</td>
+        <td th:text="${username}"></td>
+    </tr>
+    <tr>
+        <td>工号</td>
+        <td th:text="${num}"></td>
+    </tr>
+    <tr>
+        <td>打卡时间</td>
+        <td th:text="${time}"></td>
+    </tr>
+    <tr>
+        <td>打卡类别</td>
+        <td style="color: #000000" th:text="${type}"></td>
+    </tr>
+    <tr>
+        <td>着装情况</td>
+        <td style="color: #000000" th:text="${cloths}"></td>
+    </tr>
+    <tr>
+        <td>发色情况</td>
+        <td style="color: #000000" th:text="${hair}"></td>
+    </tr>
+</table>
+<div style="color: #000000" th:text="${statement}"></div>
+</body>
+</html>

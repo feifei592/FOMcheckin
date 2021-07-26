@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/daka?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Hongkong
+    username: root
+    #password: root
+    password: tq0112
+
+  mail:
+    # 配置 SMTP 服务器地址
+    host: smtp.qq.com
+    # 发送者邮箱
+    username: 806859957@qq.com
+    # 配置密码，注意不是真正的密码，而是刚刚申请到的授权码
+    password: urpmureqcvzpbffb
+    # 端口号465或587
+    port: 587
+    # 默认的邮件编码为UTF-8
+    default-encoding: UTF-8
+    # 配置SSL 加密工厂
+    properties:
+      mail:
+        smtp:
+          socketFactoryClass: javax.net.ssl.SSLSocketFactory
+        #表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: false
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 3000
+    jedis:
+      pool:
+        max-active: 30
+        max-idle: 8
+        max-wait: -1
+  resources:
+    static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources,classpath:/templates
+
+mybatis:
+
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.daka.user.entity
+  configuration:
+    map-underscore-to-camel-case: false
+
+#server:
+#  port: 8443
+#  ssl:
+#    enabled: true
+#    key-store-type: JKS
+#    key-store: classpath:tomcat.keystore
+#    key-password: tq0112
+#    key-alias: tomcat

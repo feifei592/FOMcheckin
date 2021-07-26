@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>员工考勤管理系统————管理员登录</title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+		<link rel="stylesheet" href="./static/css/font.css">
+		<link rel="stylesheet" href="./static/css/weadmin.css">
+		<link rel="stylesheet" href="./pages/register/css/web_bg.css">
+		<script src="./lib/layui/layui.js" charset="utf-8"></script>
+		<style type="text/css">
+			.slider-item {
+				height: 50px;
+				width: 100%;
+				border: 0px;
+				line-height: 50px;
+			}
+
+			#content {
+				background: #ffffff;
+				border-radius: 4px;
+				box-shadow: 5px 5px 50px #ccffff;
+				margin-top: 5%;
+			}
+			
+			.layui-form-checkbox i {
+				border-left: 1px solid #d2d2d2;
+				height: 30px;
+			}
+			
+			/* .main{
+				height: 500px;
+				width: 500px;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				border:0px solid black;
+				transform: translate(-50%,-50%) rotateX(45deg) rotateY(45deg);
+				transform-style: preserve-3d;
+			}
+			 
+			.main div{
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				height: 250px;
+				width: 250px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 60px;
+				font-weight: bold;
+			}
+			 
+			.main:hover{
+				transform: translate(-50%,-50%)  rotateX(145deg) rotateY(45deg) rotateZ(105deg);
+				transition: all 5s;
+			}
+			 
+			.face1{
+				background-color: pink;
+				transform:translate(-50%,-50%) translateY(-125px) rotateX(90deg);
+			}
+			 
+			.face2{
+				background-color: red;
+				transform:translate(-50%,-50%) translateX(-125px) rotateY(90deg);
+			}
+			 
+			.face3{
+				background-color: blue;
+				transform:translate(-50%,-50%) translateZ(-125px);
+			}
+			 
+			.face4{
+				background-color: yellow;
+				transform:translate(-50%,-50%) translateY(125px) rotateX(90deg);
+			}
+			 
+			.face5{
+				background-color: green;
+				transform:translate(-50%,-50%) translateX(125px) rotateY(90deg);
+			}
+			 
+			.face6{
+				background-color: orange;
+				transform:translate(-50%,-50%) translateZ(125px);
+			} */
+		</style>
+	</head>
+	<body>
+		<div id="web_bg" style="background-image: url(./pages/register/images/bg1.jpg);"></div>
+		<div class="login" id="content">
+			<div id="title" style="display: flex;margin-bottom: 30px;">
+				<img src="./pages/register/images/美亚.png" / style="text-align: center;width: 80%;margin: auto;">
+			</div>
+			<div class="message" style="font-size: 20px;">MEIYAPICO checkin 1.0-管理员登录</div>
+			<div id="darkbannerwrap"></div>
+			<form method="post" class="layui-form" id="Msg-form">
+				<input name="username" id="un" placeholder="请输入用户名" type="text" lay-verify="required"
+					class="layui-input">
+				<hr class="hr15">
+				<input name="password" id="pw" lay-verify="required" placeholder="请输入密码" type="password"
+					class="layui-input">
+				<hr class="hr15">
+				<div class="layui-form-item">
+					<!-- <label class="layui-form-label">滑动验证</label> -->
+					<div style="height: 50px;">
+						<div id="slider"></div>
+					</div>
+				</div>
+				<div style="margin-top: 30px;">
+					<input id="loginbtn" class="loginin" value="登录" lay-submit lay-filter="login" style="width:49%;"
+						type="submit">
+					<button id="reset" class="layui-btn layui-btn-primary" value="重置" type="reset"
+						style="width:49%;float: right;height: 48px;">
+						<i class="layui-icon layui-icon-fonts-clear">重置</i>
+					</button>
+				</div>
+				<!-- <hr class="hr20" > -->
+				<hr class="hr20">
+				<!-- <hr class="layui-border-black" style="width: 100%;"> -->
+				<div style="margin-left: 5px;margin-top: 5px;display: flex;">
+					<input id="day" type="checkbox" style="position: relative;border-left:#d2d2d2;"><label style="font-size: 18px;line-height:30px;display: flex;align-items: center;justify-content: center;color:#747474">10天内免登陆*请勿在公共电脑上勾选此项*</label>
+				</div>
+				<!-- <div class="main">
+						<div class="face1">1</div>
+						<div class="face2">2</div>
+						<div class="face3">3</div>
+						<div class="face4">4</div>
+						<div class="face5">5</div>
+						<div class="face6">6</div>
+					</div> -->
+				<!-- <div>
+            	前端静态展示，请随意输入，即可登录。
+            </div> -->
+			</form>
+		</div>
+
+		<script type="text/javascript" src="./lib/js/sliderVerify.js"></script>
+		<script type="text/javascript" src="./lib/js/jquery-3.4.1.js"></script>
+		<script type="text/javascript">
+			layui.use(['sliderVerify', 'jquery', 'form'], function() {
+				var sliderVerify = layui.sliderVerify;
+				//cookie
+				var oId = $('un');
+				var sId = oId.value;
+				var oMsg = $('Msg-form');
+				var oPassword = $('pw');
+				var sPassword = oPassword.value;
+				function setCookie(name,value,days,path){
+				    days = days || 0;
+				    path = path || '/';
+				    var oDate = new Date();
+				    oDate.setDate(oDate.getDate() + days);
+				    document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + oDate + ';path=' + path;
+				}
+				//
+				var slider = sliderVerify.render({
+					elem: '#slider'
+				});
+				var btn2 = document.getElementById('reset');
+				btn2.addEventListener('click', showMsg, false); //鼠标单击的时候调用showMes这个函数  
+				function showMsg() {
+					slider.reset();
+				}
+				let urls6 = "http://192.168.43.75:8080/";
+				var form = layui.form;
+				/* var slider = sliderVerify.render({
+					elem: '#slider'
+				}); */
+				//监听提交
+				form.on('submit(login)', function(data) {
+					if (slider.isOk()) { //用于表单验证是否已经滑动成功
+						console.log(JSON.stringify(data.field));
+						$('#loginbtn').val("正在登录...");
+						var loginLoadIndex = layer.load(2);
+						$.ajax({
+							url: "http://192.168.43.75:8080/admin/login",
+							data: JSON.stringify(data.field),
+							type: "post",
+							dataType: "json",
+							contentType: 'application/json',
+							success: function(data) {
+								console.log(data);
+								if (data == "1") {
+									var oDay = $('day');
+									if(oDay.checked){
+										/* layer.alert('请注意！您已勾选自动登录。为了保护您的账号安全，请不要在公共电脑上这样做。'); */
+										setCookie('username',sId,10);
+										setCookie('password',sPassword,10);
+									}
+									console.log("准备跳转页面");
+									location.href = "./index.html";
+								} else {
+									layer.msg(data);
+								}
+							},
+							error: function() {
+								console.log(data);
+								/* layer.close(loginLoadIndex); */
+								$('#loginbtn').val("登录");
+								location.href = "./login.html";
+							}
+						});
+					} else {
+						layer.msg("请先通过滑块验证");
+					}
+					return false;
+				});
+			})
+		</script>
+		<!-- 底部结束 -->
+	</body>
+</html>

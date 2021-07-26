@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daka.user.Dao.UserMapper">
+
+    <insert id="saveUser" parameterType="com.daka.user.entity.User">
+        insert into user (usr_name,usr_ID,usr_pic,usr_job,email_address,usr_openid)
+        values (#{usr_name},#{usr_ID},#{usr_pic},#{usr_job},#{email_address},#{usr_openid})
+    </insert>
+    <delete id="deleteUser" parameterType="Integer">
+		delete from user where id = #{id}
+	</delete>
+    <update id="updateUser" parameterType="com.daka.user.entity.User">
+		update user set
+		<if test="usr_name != null and usr_name != ''">
+            usr_name=#{usr_name},
+        </if>
+        <if test="usr_ID != null and usr_ID != ''">
+            usr_ID=#{usr_ID},
+        </if>
+        <if test="usr_pic != null and usr_pic != ''">
+            usr_pic=#{usr_pic},
+        </if>
+        <if test="usr_job != null and usr_job != ''">
+            usr_job=#{usr_job},
+        </if>
+        <if test="email_address != null and email_address != ''">
+            email_address=#{email_address},
+        </if>
+        id=#{id}
+		where id=#{id}
+	</update>
+    <select id="selectAll" resultType="com.daka.user.entity.User">
+		select * from user
+        <if test="select_str != null and select_str != ''">
+            where  usr_name LIKE "%"#{select_str}"%"
+            or usr_ID like "%"#{select_str}"%" or usr_job like "%"#{select_str}"%"
+            or usr_openid like "%"#{select_str}"%"
+        </if>
+		order by usr_ID limit #{start},#{end}
+	</select>
+    <select id="selectAllCount" resultType="Integer">
+		select count(*) from user
+		<if test="_parameter != null and _parameter != ''">
+            where  usr_name LIKE "%"#{select_str}"%"
+            or usr_ID like "%"#{select_str}"%" or usr_job like "%"#{select_str}"%"
+        </if>
+	</select>
+    <select id="selectIDbyid" resultType="String">
+		select usr_ID from user where id = #{id}
+	</select>
+    <update id="updateOpenID">
+        update user set usr_openid = #{open_ID} where usr_ID = #{usr_ID}
+    </update>
+</mapper>

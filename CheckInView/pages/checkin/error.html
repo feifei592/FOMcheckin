@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>员工列表-考勤管理系统</title>
+		<meta name="renderer" content="webkit" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<link rel="stylesheet" href="../../static/css/font.css" />
+		<link rel="stylesheet" href="../../static/css/weadmin.css" />
+
+	</head>
+	<style>
+		.layui-table-cell {
+			height: inherit;
+		}
+	</style>
+	<body>
+		<div class="weadmin-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">首页</a> <a href="javascript:;">考勤管理</a>
+				<a href="javascript:;"> <cite>着装异常</cite></a>
+			</span>
+			<a class="layui-btn layui-btn-sm" style="margin-top:3px;float:right" href="javascript:location.replace(location.href);"
+			 title="刷新">
+				<i class="layui-icon layui-icon-refresh"></i>
+				<!-- <i class="layui-icon" style="line-height:30px">&#x1002;</i> -->
+			</a>
+		</div>
+
+		<div class="weadmin-body">
+			<div class="layui-row" >
+				<form class="layui-form layui-col-md12 we-search">
+					月份：
+					<div class="layui-inline">
+						<input type="text" name="select_month" placeholder="请输入月份" autocomplete="off" class="layui-input" id="select_month" />
+					</div>
+					<button class="layui-btn" lay-submit lay-filter="search_month">
+						<i class=" layui-icon layui-icon-search"></i>
+					</button>
+				</form>
+			</div>
+
+			<div id="pic" style="width: 100%;height:400px;"></div>
+
+			<div class="layui-row" style="margin-top: 20px;">
+				<form class="layui-form layui-col-md12 we-search">
+					<div class="layui-inline">
+						<select name="abtype" id="select_ab">
+							<option value="all"></option>
+							<option value="hair_color">发色</option>
+							<option value="collar">衣领</option>
+							<option value="low_cloth">裤装</option>
+						</select>
+					</div>
+					<button class="layui-btn" lay-submit lay-filter="select_ab">
+						<i class=" layui-icon layui-icon-search"></i>
+					</button>
+				</form>
+			</div>
+
+			<table class="layui-hide" id="early" lay-filter="early"></table>
+		</div>
+
+
+		<script src="../../lib/layui/layui.js" charset="utf-8"></script>
+		<script src="../../static/js/eleDel.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../static/js/jquery-3.4.1.js" charset="utf-8"></script>
+		<script src="//cdn.bootcss.com/echarts/4.0.2/echarts.min.js"></script>
+		<script>
+			layui.use('laydate', function() {
+				var laydate = layui.laydate;
+				var time = new Date();
+				var month=time.getMonth()+1;
+				if(month<10) month='0'+month;
+				var date = time.getFullYear() + '-' + month;
+				//执行一个laydate实例
+				laydate.render({
+					elem: '#select_month', //指定元素
+					value: date,
+					type: 'month'
+				});
+				console.log($("#select_month").val());
+				console.log(date);
+			});
+		</script>
+		<script type="text/javascript">
+			// 基于准备好的dom，初始化echarts实例
+			let urls10 = "http://192.168.43.75:8080/";
+			var myChart = echarts.init(document.getElementById('pic'));
+			$.get(urls10 + 'statistic/selectAbnormalPersons?select_month=2021-07', function(res) {
+				console.log(res);
+				console.log($("#select_month").val());
+				myChart.setOption({
+					series: [{
+						name: '异常类型',
+						type: 'pie', // 设置图表类型为饼图
+						radius: '55%', // 饼图的半径，外半径为可视区尺寸（容器高宽中较小一项）的 55% 长度。
+						center: ['50%', '50%'],
+						data: [
+							//{value:data.neck,name:'衣领异常'},
+							{
+								value: res.hair_color,
+								name: '发色异常'
+							},
+							{
+								value: res.low_cloth,
+								name: '裤装异常'
+							},
+							{
+								value: res.collar,
+								name: '衣领异常'
+							}
+						]
+					}],
+					/* roseType: 'angle', */
+					backgroundColor: 'rgba(96, 208, 255, 0.5)',
+					labelLine: {
+					     lineStyle: {
+					         color: 'rgba(132, 132, 132, 0.5)'
+					     }
+					},
+					label: {
+					    textStyle: {
+					        color: 'rgba(132, 132, 132, 0.5)'
+					    }
+					},
+					legend: {
+					    top: 'bottom'/* ,
+						pageButtonPosition: 'end' */
+					},
+					/* title.show : true,
+					title.test: "违规统计" */
+				})
+			}, 'json')
+			
+		</script>
+		<script>
+			let urls1 = "http://192.168.43.75:8080/";
+			console.log($("#select_month").val());
+			layui.use('table', function() {
+				var table = layui.table;
+				var $ = layui.$;
+
+				table.render({
+					elem: '#early',
+					url: urls1 + 'statistic/select_TotalAbnormal?abtype=all&select_month=2021-07',
+					cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+						,
+					toolbar: '#toolbarDemo',
+					defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+						title: '提示',
+						layEvent: 'LAYTABLE_TIPS',
+						icon: 'layui-icon-tips'
+					}],
+					id: 'querylist',
+					response: {
+						statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+					},
+					parseData: function(res) { //将原始数据解析成 table 组件所规定的数据
+						/* console.log(res);
+						console.log(res.length); */
+						/* $("#length").html("共有数据："+res.length+" 条"); */
+						return {
+							"code": 200, //解析接口状态
+							"msg": "", //解析提示文本
+							"count": res.count, //解析数据长度
+							"data": res //解析数据列表
+						};
+					},
+					cols: [
+						[{
+								field: 'usr_name',
+								title: '姓名'
+							}, {
+								field: 'usr_ID',
+								title: '工号',
+								sort: true
+							}, {
+								field: 'usr_job',
+								title: '职位'
+							},
+							{
+								field: 'date',
+								title: '打卡日期'
+							},
+							{
+								field: 'time',
+								title: '打卡时间'
+							},
+							{
+								field: 'abtype',
+								title: '违规情况'
+							}
+							,
+							{
+								field: 'img',
+								title: '打卡照片',
+								unresize: true,
+								sort: false,
+								style: 'display:flex;height:120px;',
+								templet: function(d) {
+									return '<div style="display:flex;justify-content:center;">'+
+										'<img style="height:100px;width:100px" src='+urls1+'checkpic/'+d.pic_name+' onclick="showBigPic(\''+d.pic_name+'\')">'+
+										'</div>'								
+							}
+							}
+						]
+					],
+					page: false
+				});
+			});
+		</script>
+		<script>
+			layui.use(['form'], function() {
+				var form = layui.form,
+					$ = layui.jquery;
+				form.on('submit(search_month)', function() {
+					layui.use('table', function() {
+						var table = layui.table;
+						console.log($("#select_month").val());
+						console.log($("#select_ab").val());
+						var myChart = echarts.init(document.getElementById('pic'));
+						$.get(urls10 + 'statistic/selectAbnormalPersons?select_month=' +  $("#select_month").val(), function(res) {
+							console.log(res);
+							console.log($("#select_month").val());
+							myChart.setOption({
+								series: [{
+									name: '异常类型',
+									type: 'pie', // 设置图表类型为饼图
+									radius: '55%', // 饼图的半径，外半径为可视区尺寸（容器高宽中较小一项）的 55% 长度。
+									center: ['50%', '50%'],
+									data: [
+										//{value:data.neck,name:'衣领异常'},
+										{
+											value: res.hair_color,
+											name: '发色异常'
+										},
+										{
+											value: res.low_cloth,
+											name: '裤装异常'
+										},
+										{
+											value: res.collar,
+											name: '衣领异常'
+										}
+									]
+								}],
+								/* roseType: 'angle', */
+								backgroundColor: 'rgba(96, 208, 255, 0.5)',
+								labelLine: {
+								     lineStyle: {
+								         color: 'rgba(132, 132, 132, 0.5)'
+								     }
+								},
+								label: {
+								    textStyle: {
+								        color: 'rgba(132, 132, 132, 0.5)'
+								    }
+								},
+								legend: {
+								    top: 'bottom'/* ,
+									pageButtonPosition: 'end' */
+								},
+								/* title.show : true,
+								title.test: "违规统计" */
+							})
+						}, 'json');
+						
+						table.render({
+							elem: '#early',
+							url: urls1 + 'statistic/select_TotalAbnormal?abtype=all&select_month=' + $("#select_month").val(),
+							cellMinWidth: 80,
+							page: false,
+							response: {
+								statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+							},
+							parseData: function(res) { //将原始数据解析成 table 组件所规定的数据
+								console.log(res);
+								return {
+									"code": 200, //解析接口状态
+									"msg": "", //解析提示文本
+									"count": res.count, //解析数据长度
+									"data": res //解析数据列表
+								};
+							},
+							cols: [
+								[{
+										field: 'usr_name',
+										title: '姓名'
+									}, {
+										field: 'usr_ID',
+										title: '工号',
+										sort: true
+									}, {
+										field: 'usr_job',
+										title: '职位'
+									},
+									{
+										field: 'date',
+										title: '打卡日期'
+									},
+									{
+										field: 'time',
+										title: '打卡时间'
+									},
+									{
+										field: 'abtype',
+										title: '违规情况'
+									}
+									,
+									{
+										field: 'img',
+										title: '打卡照片',
+										unresize: true,
+										sort: false,
+										style: 'display:flex;height:120px;',
+										templet: function(d) {
+										return '<div style="display:flex;justify-content:center;">'+
+											'<img style="height:100px;width:100px" src='+urls1+'checkpic/'+d.pic_name+' onclick="showBigPic(\''+d.pic_name+'\')">'+
+											'</div>'
+									}
+									}
+								]
+							]
+						});
+					});
+					return false;
+				});
+				form.on('submit(select_ab)', function() {
+					console.log($("#select_ab").val());
+					layui.use('table', function() {
+						var table = layui.table;
+						table.render({
+							elem: '#early',
+							url: urls1 + 'statistic/select_TotalAbnormal?abtype=' + $("#select_ab").val() + '&select_month=' + $(
+								"#select_month").val(),
+							cellMinWidth: 80,
+							page: false,
+							response: {
+								statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+							},
+							parseData: function(res) { //将原始数据解析成 table 组件所规定的数据
+								console.log(res);
+								return {
+									"code": 200, //解析接口状态
+									"msg": "", //解析提示文本
+									"count": res.count, //解析数据长度
+									"data": res //解析数据列表
+								};
+							},
+							cols: [
+								[{
+										field: 'usr_name',
+										title: '姓名'
+									}, {
+										field: 'usr_ID',
+										title: '工号',
+										sort: true
+									}, {
+										field: 'usr_job',
+										title: '职位'
+									},
+									{
+										field: 'date',
+										title: '打卡日期'
+									},
+									{
+										field: 'time',
+										title: '打卡时间'
+									},
+									{
+										field: 'abtype',
+										title: '违规情况'
+									}
+									,
+									{
+										field: 'img',
+										title: '打卡照片',
+										unresize: true,
+										sort: false,
+										style: 'display:flex;height:120px;',
+										templet: function(d) {
+											return '<div style="display:flex;justify-content:center;">'+
+												'<img style="height:100px;width:100px" src='+urls1+'checkpic/'+d.pic_name+' onclick="showBigPic(\''+d.pic_name+'\')">'+
+												'</div>'								
+									}
+									}
+								]
+							]
+						});
+					});
+					return false;
+				});
+			})
+		</script>
+		<script>
+			function showBigPic(url) {
+				var imgHtml = "<img src=" + urls10 + "checkpic/" + url + " width='500px' height='500px'/>";
+				layer.open({
+					type: 1,
+					title: false,
+					closeBtn: 0,
+					area: ['auto'],
+					skin: 'layui-layer-nobg', //没有背景色
+					shadeClose: true,
+					content: imgHtml
+				});
+			}
+		</script>
+	</body>
+</html>

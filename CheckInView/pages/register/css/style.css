@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+body {
+    background-color: #ffffff;
+}
+
+/*登录*/
+.container {
+    position: absolute;
+    left: 50%;
+    top:50%;
+    width: 500px;
+    margin-left: -250px;
+    margin-top: -200px;"
+}
+.content{
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 5px 5px 50px #ccffff;
+}
+
+查看样式表

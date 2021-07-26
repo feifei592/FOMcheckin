@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>毛玻璃效果</title>
+</head>
+<style>
+*{
+  margin: 0;
+  padding: 0;
+}
+.bg{
+  background:url(1.jpg) no-repeat center center fixed;/* 与下面的blur_box:before中的background设置一样 */
+  width:100%;
+  height:100%;
+}
+.blur_box{
+  z-index: 0;/* 为不影响内容显示必须为最高层 */
+  position: relative;
+  overflow: hidden;
+}
+.blur_box:before{
+  content: "";/* 必须包括 */
+  position: absolute;/* 固定模糊层位置 */
+  width:300%;
+  height:300%;
+  left: -100%;/* 回调模糊层位置 */
+  top: -100%;/* 回调模糊层位置 */
+  background:url(1.jpg) no-repeat center center fixed;/* 与上面的bg中的background设置一样 */
+  filter: blur(20px);/* 值越大越模糊 */
+  z-index: -2;/* 模糊层在最下面 */
+}
+.rgba{
+  background-color: rgba(0, 0, 0, 0.2);/* 为文字更好显示，将背景颜色加深 */
+  position: absolute;/* 固定半透明色层位置 */
+  width:100%;
+  height:100%;
+  z-index: -1;/* 中间是rgba半透明色层 */
+}
+.content_text{
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 50px 30px;
+  line-height: 28px;
+}
+article{
+  width:40%;
+  height:300px;
+  margin:120px auto;
+}
+.blur_box:before{
+  content: "";
+  position: absolute;
+  width:300%;/* 模糊层的宽度和高度都变大 */
+  height:300%;
+  left: -100%;/* 回调模糊层位置 */
+  top: -100%;
+  background:url(1.jpg) no-repeat center center fixed; 
+  filter: blur(20px);
+  z-index: -2;
+}
+</style>
+<body
+  <div class="bg">
+    <article class="blur_box">
+      <div class="rgba"></div><!-- 写在这其实和blur_box:before效果相同，但已经设置过blur_box:before了 -->
+      <div class="content_text">
+        <h1>haha</h1>
+        <p>texttexttexttexttexttexttexttexttext</p>
+        <p>texttexttexttexttexttexttexttexttext</p>
+        <p>texttexttexttexttexttexttexttexttext</p>
+        <p>texttexttexttexttexttexttexttexttext</p>
+        <p>texttexttexttexttexttexttexttexttext</p>
+        <p>texttexttexttexttexttexttexttexttext</p>
+      </div>
+    </article>
+  </div>
+</body>
+</html>
